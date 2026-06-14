@@ -2,6 +2,7 @@ import { Elysia } from "elysia";
 import { db } from "./db";
 import { users } from "./db/schema";
 import { usersRoute } from "./routes/users-route";
+import { authRoute } from "./routes/auth-route";
 
 const app = new Elysia()
   .get("/", () => ({
@@ -22,6 +23,7 @@ const app = new Elysia()
     }
   })
   .use(usersRoute)
+  .use(authRoute)
   .listen(process.env.PORT || 3000);
 
 console.log(
