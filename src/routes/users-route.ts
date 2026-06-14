@@ -1,17 +1,16 @@
 import { Elysia } from "elysia";
-import { registerUser, getCurrentUser } from "../services/users-service";
+import { registerUser, getCurrentUser, logoutUser } from "../services/users-service";
+import { extractBearerToken, isUuid } from "../utils/auth";
 
 export const usersRoute = new Elysia({ prefix: "/api/users" })
   .get("/current", async ({ request, set }) => {
     try {
-      const auth = (request.headers.get("authorization") || "").toString();
-
-      if (!auth || !auth.startsWith("Bearer ")) {
+      const token = extractBearerToken(request);
+      if (!token || !isUuid(token)) {
         set.status = 401;
         return { error: "Unauthorized" };
       }
 
-      const token = auth.split(" ")[1];
       const user = await getCurrentUser(token);
 
       if (!user) {
@@ -20,6 +19,21 @@ export const usersRoute = new Elysia({ prefix: "/api/users" })
       }
 
       return { data: user };
+    } catch (error: any) {
+      set.status = 401;
+      return { error: "Unauthorized" };
+    }
+  })
+  .delete("/logout", async ({ request, set }) => {
+    try {
+      const token = extractBearerToken(request);
+      if (!token || !isUuid(token)) {
+        set.status = 401;
+        return { error: "Unauthorized" };
+      }
+
+      const result = await logoutUser(token);
+      return { data: result };
     } catch (error: any) {
       set.status = 401;
       return { error: "Unauthorized" };
