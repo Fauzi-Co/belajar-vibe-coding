@@ -3,6 +3,13 @@ import { users, sessions } from "../db/schema";
 import { eq } from "drizzle-orm";
 import { hash } from "bcryptjs";
 
+export interface User {
+  id: number;
+  name: string;
+  email: string;
+  created_at: string | Date | null;
+}
+
 export async function registerUser(
   name: string,
   email: string,
@@ -28,7 +35,7 @@ export async function registerUser(
   return "OK";
 }
 
-export async function getCurrentUser(token: string) {
+export async function getCurrentUser(token: string): Promise<User | null> {
   const sessionList = await db
     .select()
     .from(sessions)
@@ -60,4 +67,22 @@ export async function getCurrentUser(token: string) {
     email: user.email,
     created_at: user.createdAt?.toISOString?.() ?? user.createdAt,
   };
+}
+
+export async function logoutUser(token: string): Promise<string> {
+  // Delete matching sessions
+  await db.delete(sessions).where(eq(sessions.token, token));
+
+  // Verify deletion
+  const remaining = await db
+    .select()
+    .from(sessions)
+    .where(eq(sessions.token, token))
+    .limit(1);
+
+  if (remaining.length > 0) {
+    throw new Error("Unauthorized");
+  }
+
+  return "OK";
 }
