@@ -8,6 +8,13 @@
       "when": 1781406175896,
       "tag": "0000_spooky_captain_marvel",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "5",
+      "when": 1781410223081,
+      "tag": "0001_fast_magdalene",
+      "breakpoints": true
     }
   ]
 }
