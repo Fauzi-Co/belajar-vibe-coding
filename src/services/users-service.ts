@@ -1,5 +1,5 @@
 import { db } from "../db";
-import { users } from "../db/schema";
+import { users, sessions } from "../db/schema";
 import { eq } from "drizzle-orm";
 import { hash } from "bcryptjs";
 
@@ -26,4 +26,38 @@ export async function registerUser(
   });
 
   return "OK";
+}
+
+export async function getCurrentUser(token: string) {
+  const sessionList = await db
+    .select()
+    .from(sessions)
+    .where(eq(sessions.token, token))
+    .limit(1);
+
+  if (sessionList.length === 0) return null;
+
+  const session = sessionList[0];
+
+  const userList = await db
+    .select({
+      id: users.id,
+      name: users.name,
+      email: users.email,
+      createdAt: users.createdAt,
+    })
+    .from(users)
+    .where(eq(users.id, session.userId))
+    .limit(1);
+
+  if (userList.length === 0) return null;
+
+  const user = userList[0];
+
+  return {
+    id: user.id,
+    name: user.name,
+    email: user.email,
+    created_at: user.createdAt?.toISOString?.() ?? user.createdAt,
+  };
 }
