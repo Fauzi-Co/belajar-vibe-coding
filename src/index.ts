@@ -6,7 +6,7 @@ import { usersRoute } from "./routes/users-route";
 const app = new Elysia()
   .get("/", () => ({
     status: "ok",
-    message: "Bun + Elysia + Drizzle + MySQL server is up and running!",
+    message: "Bun + Elysia + Drizzle + MySQL server is up and running! Tes",
     timestamp: new Date().toISOString()
   }))
   .get("/users", async () => {
