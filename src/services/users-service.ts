@@ -74,6 +74,21 @@ export async function registerUser(
   return "OK";
 }
 
+/**
+ * Mendaftarkan pengguna baru.
+ *
+ * Melakukan validasi terhadap `name`, `email`, dan `password`, memastikan
+ * email belum terdaftar, melakukan hashing pada password, lalu memasukkan
+ * record pengguna baru ke database.
+ *
+ * @param name - Nama tampilan untuk pengguna baru
+ * @param email - Alamat email untuk pengguna baru
+ * @param password - Password plaintext yang akan di-hash sebelum disimpan
+ * @returns String "OK" saat pendaftaran berhasil
+ * @throws Error jika validasi gagal atau email sudah ada
+ */
+
+
 export async function getCurrentUser(token: string): Promise<User | null> {
   const sessionList = await db
     .select()
@@ -109,6 +124,18 @@ export async function getCurrentUser(token: string): Promise<User | null> {
   };
 }
 
+/**
+ * Mengambil data pengguna yang sedang terautentikasi berdasarkan token sesi.
+ *
+ * Mencari sesi berdasarkan `token`, lalu mengambil record pengguna yang
+ * terkait. Mengembalikan objek `User` dengan field terpilih atau `null` jika
+ * sesi atau pengguna tidak ditemukan.
+ *
+ * @param token - Token sesi untuk mengidentifikasi sesi pengguna aktif
+ * @returns Objek `User` atau `null` ketika sesi tidak valid atau kedaluwarsa
+ */
+
+
 export async function logoutUser(token: string): Promise<string> {
   // Delete matching sessions
   await db.delete(sessions).where(eq(sessions.token, token));
@@ -126,3 +153,15 @@ export async function logoutUser(token: string): Promise<string> {
 
   return "OK";
 }
+
+/**
+ * Mengeluarkan (logout) pengguna dengan menghapus sesi yang cocok dengan token.
+ *
+ * Menghapus baris sesi manapun yang memiliki `token` tersebut dan memverifikasi
+ * bahwa tidak ada sesi yang tersisa. Mengembalikan "OK" saat berhasil atau
+ * melempar Error jika sesi tidak dapat dihapus.
+ *
+ * @param token - Token sesi yang akan dihapus
+ * @returns "OK" saat proses logout berhasil
+ */
+

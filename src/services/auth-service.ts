@@ -4,6 +4,22 @@ import { eq } from "drizzle-orm";
 import { compare } from "bcryptjs";
 import crypto from "crypto";
 
+/**
+ * Melakukan autentikasi pengguna dan membuat token sesi.
+ *
+ * Langkah:
+ * - Mencari pengguna berdasarkan `email`.
+ * - Memverifikasi `password` yang diberikan terhadap hash password yang tersimpan.
+ * - Jika kredensial valid, membuat baris sesi baru dengan token acak.
+ * - Mengembalikan token sesi yang dibuat.
+ *
+ * Melempar Error dengan pesan generik jika autentikasi gagal agar tidak
+ * memberitahukan apakah email atau password yang salah.
+ *
+ * @param email - Alamat email pengguna untuk mencari akun
+ * @param password - Password plaintext yang akan diverifikasi terhadap hash
+ * @returns Token sesi baru sebagai string saat autentikasi berhasil
+ */
 export async function loginUser(email: string, password: string): Promise<string> {
   const userList = await db
     .select()
