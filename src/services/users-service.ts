@@ -3,8 +3,11 @@ import { users, sessions } from "../db/schema";
 import { eq } from "drizzle-orm";
 import { hash } from "bcryptjs";
 
-const MAX_NAME_LENGTH = 255;
-const MIN_PASSWORD_LENGTH = 8;
+const NAME_MIN = 2;
+const NAME_MAX = 255;
+const PASSWORD_MIN = 8;
+const PASSWORD_MAX = 128;
+const EMAIL_MAX = 320;
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 function validateRegistrationInput(name: string, email: string, password: string) {
@@ -12,16 +15,28 @@ function validateRegistrationInput(name: string, email: string, password: string
     throw new Error("Semua field wajib diisi");
   }
 
-  if (name.length > MAX_NAME_LENGTH) {
-    throw new Error("Nama terlalu panjang (maks 255 karakter)");
+  if (name.length < NAME_MIN) {
+    throw new Error(`Nama terlalu pendek (minimal ${NAME_MIN} karakter)`);
+  }
+
+  if (name.length > NAME_MAX) {
+    throw new Error(`Nama terlalu panjang (maks ${NAME_MAX} karakter)`);
   }
 
   if (!EMAIL_REGEX.test(email)) {
     throw new Error("Format email tidak valid");
   }
 
-  if (password.length < MIN_PASSWORD_LENGTH) {
-    throw new Error("Panjang password minimal 8 karakter");
+  if (password.length < PASSWORD_MIN) {
+    throw new Error(`Panjang password minimal ${PASSWORD_MIN} karakter`);
+  }
+
+  if (password.length > PASSWORD_MAX) {
+    throw new Error(`Panjang password maksimal ${PASSWORD_MAX} karakter`);
+  }
+
+  if (email.length > EMAIL_MAX) {
+    throw new Error(`Email terlalu panjang (maks ${EMAIL_MAX} karakter)`);
   }
 }
 
