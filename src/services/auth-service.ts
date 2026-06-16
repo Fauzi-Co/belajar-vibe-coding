@@ -16,6 +16,9 @@ export async function loginUser(email: string, password: string): Promise<string
   }
 
   const user = userList[0];
+  if (!user) {
+    throw new Error("Email dan Password Salah");
+  }
   const isMatch = await compare(password, user.password);
 
   if (!isMatch) {
