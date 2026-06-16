@@ -145,7 +145,5 @@ bun test tests/users.test.ts
 **Catatan tambahan**
 
 - Jangan jalankan tes terhadap database produksi — tes akan menghapus data di tabel `users` dan `sessions`.
-- Jika ingin menambah endpoint baru, tambahkan route di `src/routes/` dan logika di `src/services/`.
 
-Butuh bantuan menambahkan CI atau sample GitHub Actions untuk menjalankan `bun test` otomatis pada PR? Saya bisa membantu menambahkan workflow contoh.
 
