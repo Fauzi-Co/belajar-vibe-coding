@@ -81,9 +81,11 @@ export async function getCurrentUser(token: string): Promise<User | null> {
     .where(eq(sessions.token, token))
     .limit(1);
 
-  if (sessionList.length === 0) return null;
-
   const session = sessionList[0];
+  if (!session) return null;
+
+  const userId = session.userId;
+  if (userId == null) return null;
 
   const userList = await db
     .select({
@@ -93,12 +95,11 @@ export async function getCurrentUser(token: string): Promise<User | null> {
       createdAt: users.createdAt,
     })
     .from(users)
-    .where(eq(users.id, session.userId))
+    .where(eq(users.id, userId))
     .limit(1);
 
-  if (userList.length === 0) return null;
-
   const user = userList[0];
+  if (!user) return null;
 
   return {
     id: user.id,
