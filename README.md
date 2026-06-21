@@ -39,6 +39,9 @@ Proyek contoh API sederhana menggunakan Bun, Elysia, Drizzle (MySQL) dan Drizzle
 	- Respon sukses: `200 OK` `{ "data": "OK" }`
 	- Error: `401` jika token tidak valid
 
+- GET `/swagger` — Dokumentasi API interaktif (Swagger UI)
+	- Akses melalui browser (misal: `http://localhost:3000/swagger`) untuk melihat detail spesifikasi OpenAPI dan menguji semua endpoint secara langsung.
+
 Selain itu ada beberapa route utilitas di [src/index.ts](src/index.ts) seperti `/` dan `GET /users` (debug).
 
 **Schema Database** (lihat [src/db/schema.ts](src/db/schema.ts))
