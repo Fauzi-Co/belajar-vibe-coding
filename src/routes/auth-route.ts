@@ -1,13 +1,10 @@
-import { Elysia } from "elysia";
+import { Elysia, t } from "elysia";
 import { loginUser } from "../services/auth-service";
 
 export const authRoute = new Elysia({ prefix: "/api" })
   .post("/login", async ({ body, set }) => {
     try {
-      const { email, password } = body as {
-        email?: string;
-        password?: string;
-      };
+      const { email, password } = body;
 
       if (!email || !password) {
         set.status = 400;
@@ -19,5 +16,22 @@ export const authRoute = new Elysia({ prefix: "/api" })
     } catch (error: any) {
       set.status = 400;
       return { error: error.message };
+    }
+  }, {
+    detail: {
+      summary: "Login / Buat session",
+      tags: ["Auth"]
+    },
+    body: t.Object({
+      email: t.String({ description: "Email pengguna" }),
+      password: t.String({ description: "Password pengguna" })
+    }),
+    response: {
+      200: t.Object({
+        data: t.String()
+      }),
+      400: t.Object({
+        error: t.String()
+      })
     }
   });

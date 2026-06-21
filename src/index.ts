@@ -1,10 +1,23 @@
 import { Elysia } from "elysia";
+import { swagger } from "@elysiajs/swagger";
 import { db } from "./db";
 import { users } from "./db/schema";
 import { usersRoute } from "./routes/users-route";
 import { authRoute } from "./routes/auth-route";
 
 const app = new Elysia()
+  .use(
+    swagger({
+      path: "/swagger",
+      documentation: {
+        info: {
+          title: "Belajar Vibe Coding API",
+          version: "1.0.0",
+          description: "Dokumentasi API untuk belajar-vibe-coding"
+        }
+      }
+    })
+  )
   .get("/", () => ({
     status: "ok",
     message: "Bun + Elysia + Drizzle + MySQL server is up and running! Tes",
