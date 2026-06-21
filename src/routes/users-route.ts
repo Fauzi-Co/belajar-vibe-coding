@@ -1,4 +1,4 @@
-import { Elysia } from "elysia";
+import { Elysia, t } from "elysia";
 import { registerUser, getCurrentUser, logoutUser } from "../services/users-service";
 import { extractBearerToken, isUuid } from "../utils/auth";
 
@@ -23,6 +23,27 @@ export const usersRoute = new Elysia({ prefix: "/api/users" })
       set.status = 401;
       return { error: "Unauthorized" };
     }
+  }, {
+    detail: {
+      summary: "Ambil user aktif berdasarkan token",
+      tags: ["User"]
+    },
+    headers: t.Object({
+      authorization: t.Optional(t.String({ description: "Bearer <token>" }))
+    }),
+    response: {
+      200: t.Object({
+        data: t.Object({
+          id: t.Numeric(),
+          name: t.String(),
+          email: t.String(),
+          created_at: t.Any()
+        })
+      }),
+      401: t.Object({
+        error: t.String()
+      })
+    }
   })
   .delete("/logout", async ({ request, set }) => {
     try {
@@ -38,14 +59,26 @@ export const usersRoute = new Elysia({ prefix: "/api/users" })
       set.status = 401;
       return { error: "Unauthorized" };
     }
+  }, {
+    detail: {
+      summary: "Logout (hapus session)",
+      tags: ["User"]
+    },
+    headers: t.Object({
+      authorization: t.Optional(t.String({ description: "Bearer <token>" }))
+    }),
+    response: {
+      200: t.Object({
+        data: t.String()
+      }),
+      401: t.Object({
+        error: t.String()
+      })
+    }
   })
   .post("/", async ({ body, set }) => {
     try {
-      const { name, email, password } = body as {
-        name: string;
-        email: string;
-        password: string;
-      };
+      const { name, email, password } = body;
 
       if (!name || !email || !password) {
         set.status = 400;
@@ -58,5 +91,23 @@ export const usersRoute = new Elysia({ prefix: "/api/users" })
     } catch (error: any) {
       set.status = 400;
       return { error: error.message };
+    }
+  }, {
+    detail: {
+      summary: "Registrasi pengguna baru",
+      tags: ["User"]
+    },
+    body: t.Object({
+      name: t.String({ description: "Nama pengguna" }),
+      email: t.String({ description: "Email pengguna" }),
+      password: t.String({ description: "Password pengguna" })
+    }),
+    response: {
+      200: t.Object({
+        data: t.String()
+      }),
+      400: t.Object({
+        error: t.String()
+      })
     }
   });
